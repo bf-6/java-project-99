@@ -8,4 +8,3 @@
 ## Деплой на Render
 
 
-https://java-page-analyzer-47up.onrender.com

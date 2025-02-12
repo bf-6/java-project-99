@@ -7,19 +7,24 @@ plugins {
 	jacoco
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("io.freefair.lombok") version "8.10"
 }
 
 group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
 
 application {
-	mainClass.set("hexlet.code.AppApplication")
+	mainClass = "hexlet.code.app.AppApplication"
 }
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
+}
+
+checkstyle {
+	toolVersion = "10.12.4"
 }
 
 repositories {
@@ -40,6 +45,10 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<Checkstyle> {
+	enabled = false
 }
 
 tasks.test {

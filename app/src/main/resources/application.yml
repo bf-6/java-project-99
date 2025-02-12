@@ -4,5 +4,7 @@ spring:
     ansi:
       enabled: always
 
-  server:
-    port: port=${PORT:8080}
+#  server:
+#    port: port=${PORT:8080}
+  datasource:
+    url=${JDBC_DATABASE_URL}

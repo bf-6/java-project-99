@@ -1,0 +1,8 @@
+spring:
+  application: name=app
+  output:
+    ansi:
+      enabled: always
+
+  server:
+    port: 5432

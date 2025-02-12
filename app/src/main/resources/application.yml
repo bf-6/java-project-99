@@ -7,4 +7,4 @@ spring:
 #  server:
 #    port: port=${PORT:8080}
   datasource:
-    url=${JDBC_DATABASE_URL}
+    url: ${JDBC_DATABASE_URL}

@@ -14,7 +14,7 @@ group = "hexlet.code"
 version = "0.0.1-SNAPSHOT"
 
 application {
-	mainClass = "hexlet.code.app.AppApplication"
+	mainClass = "hexlet.code.AppApplication"
 }
 
 java {
@@ -24,7 +24,8 @@ java {
 }
 
 checkstyle {
-	toolVersion = "10.12.4"
+	configFile = file("config/checkstyle/checkstyle.xml")
+	toolVersion = "10.13.0"
 }
 
 repositories {
@@ -37,21 +38,30 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
 	// assertj // jupiter
 	testImplementation("org.assertj:assertj-core:3.27.2")
 	testImplementation(platform("org.junit:junit-bom:5.10.0"))
 	testImplementation("org.junit.jupiter:junit-jupiter")
+
 	// postgresql
-	implementation("org.postgresql:postgresql:42.7.3")
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	implementation("org.postgresql:postgresql:42.7.5")
+
+	runtimeOnly("com.h2database:h2:2.3.232")
+
+
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.withType<Checkstyle> {
-	enabled = false
-}
+//tasks.withType<Checkstyle> {
+//	enabled = false
+//}
 
 tasks.test {
 	useJUnitPlatform()

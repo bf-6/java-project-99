@@ -1,9 +1,14 @@
 spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
   application:
     name: app
   output:
     ansi:
       enabled: always
 
-  datasource:
-    url: ${JDBC_DATABASE_URL}
+  profiles:
+    default: development

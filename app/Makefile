@@ -5,7 +5,7 @@ dev:
 	./gradlew run
 
 setup:
-	gradle wrapper --gradle-version 8.7
+	gradle wrapper --gradle-version 8.9
 
 clean:
 	./gradlew clean

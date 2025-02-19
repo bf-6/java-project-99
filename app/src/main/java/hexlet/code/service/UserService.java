@@ -29,16 +29,16 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!")));
     }
 
-    public UserDTO create(UserCreateDTO userDTO) {
-        var user = userMapper.map(userDTO);
+    public UserDTO create(UserCreateDTO userData) {
+        var user = userMapper.map(userData);
         userRepository.save(user);
         return userMapper.map(user);
     }
 
-    public UserDTO update(long id, UserUpdateDTO userDTO) {
+    public UserDTO update(long id, UserUpdateDTO userData) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!"));
-        userMapper.update(userDTO, user);
+        userMapper.update(userData, user);
         userRepository.save(user);
         return userMapper.map(user);
     }

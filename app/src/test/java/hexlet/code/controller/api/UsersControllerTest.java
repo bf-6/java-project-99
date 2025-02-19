@@ -116,12 +116,13 @@ public class UsersControllerTest {
         var data = new HashMap<>();
         data.put("firstName", name);
 
-        var request = put("/api/users/{id}", testUser.getId()).with(jwt())
+        var request = put("/api/users/" + testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(data));
 
         mockMvc.perform(request)
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
 
         var user = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(user.getFirstName()).isEqualTo((name));

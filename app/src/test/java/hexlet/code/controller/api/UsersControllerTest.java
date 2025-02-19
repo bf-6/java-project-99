@@ -111,7 +111,7 @@ public class UsersControllerTest {
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void testPartialUpdate() throws Exception {
         var name = faker.name().firstName();
         var data = new HashMap<>();
         data.put("firstName", name);
@@ -126,6 +126,31 @@ public class UsersControllerTest {
 
         var user = userRepository.findById(testUser.getId()).orElseThrow();
         assertThat(user.getFirstName()).isEqualTo((name));
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        var firstName = faker.name().firstName();
+        var lastName = faker.name().lastName();
+        var email = faker.internet().emailAddress();
+
+        var data = new HashMap<>();
+        data.put("firstName", firstName);
+        data.put("lastName", lastName);
+        data.put("email", email);
+
+        var request = put("/api/users/" + testUser.getId()).with(jwt())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(data));
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var user = userRepository.findById(testUser.getId()).orElseThrow();
+        assertThat(user.getFirstName()).isEqualTo((firstName));
+        assertThat(user.getLastName()).isEqualTo((lastName));
+        assertThat(user.getEmail()).isEqualTo((email));
     }
 
     @Test

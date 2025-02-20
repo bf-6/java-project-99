@@ -24,7 +24,7 @@ import hexlet.code.component.RsaKeyProperties;
 public class EncodersConfig {
 
     @Autowired
-    RsaKeyProperties rsaKeys;
+    private RsaKeyProperties rsaKeys;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

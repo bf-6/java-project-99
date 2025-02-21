@@ -20,9 +20,13 @@ import org.mapstruct.ReportingPolicy;
 public abstract class UserMapper {
 
     @Mapping(source = "password", target = "passwordDigest")
+
     public abstract User map(UserCreateDTO model);
+
     public abstract UserDTO map(User model);
+
     public abstract User map(UserDTO model);
+
     public abstract void update(UserUpdateDTO update, @MappingTarget User model);
 
 }

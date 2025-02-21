@@ -76,7 +76,7 @@ public class TaskStatusControllerTest {
     }
 
     @Test
-    public void testIndex() throws Exception {
+    void testIndex() throws Exception {
         var response = mockMvc.perform(get("/api/task_statuses").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()

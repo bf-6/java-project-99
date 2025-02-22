@@ -73,9 +73,9 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-tasks.withType<Checkstyle> {
-	enabled = false
-}
+//tasks.withType<Checkstyle> {
+//	enabled = false
+//}
 
 tasks.test {
 	useJUnitPlatform()

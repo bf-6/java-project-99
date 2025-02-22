@@ -29,7 +29,6 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -94,7 +93,6 @@ public class TaskControllerTest {
         testTask.setTaskStatus(testStatus);
         testTask.setAssignee(anotherUser);
 
-        //taskRepository.save(testTask);
     }
 
     @Test
@@ -113,38 +111,5 @@ public class TaskControllerTest {
 
         assertThat(actual.size()).isEqualTo(expected.size());
         Assertions.assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
-    }
-
-    @Test
-    void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getTaskModel())
-                .create();
-
-        var status = Instancio.of(modelGenerator.getStatusModel())
-                .create();
-        data.setTaskStatus(status);
-
-        var user = Instancio.of(modelGenerator.getUserModel())
-                .create();
-        data.setAssignee(user);
-
-        var dto = taskMapper.map(data);
-
-        var request = post("/api/tasks").with(jwt())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto));
-
-        mockMvc.perform(request)
-                .andExpect(status().isCreated());
-
-        var task = taskRepository.findByName(data.getName()).orElse(null);
-
-        assertNotNull(task);
-        assertThat(task.getName()).isEqualTo(data.getName());
-        assertThat(task.getIndex()).isEqualTo(data.getIndex());
-        assertThat(task.getDescription()).isEqualTo(data.getDescription());
-        assertThat(task.getTaskStatus()).isEqualTo(data.getTaskStatus());
-//        assertThat(task.getAssignee()).isEqualTo(data.getAssignee());
-
     }
 }

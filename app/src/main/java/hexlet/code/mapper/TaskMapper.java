@@ -4,12 +4,16 @@ import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.dto.task.TaskDTO;
 import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.model.Task;
+import hexlet.code.model.TaskStatus;
+import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Mapper(
@@ -20,9 +24,12 @@ import org.mapstruct.ReportingPolicy;
 )
 public abstract class TaskMapper {
 
+    @Autowired
+    private TaskStatusRepository statusRepository;
+
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
-    @Mapping(source = "status", target = "taskStatus.slug")
+    @Mapping(source = "status", target = "taskStatus", qualifiedByName = "statusSlug")
     @Mapping(source = "assigneeId", target = "assignee.id")
     public abstract Task map(TaskCreateDTO model);
 
@@ -43,5 +50,11 @@ public abstract class TaskMapper {
     @Mapping(target = "taskStatus.slug", source = "status")
     @Mapping(target = "assignee.id", source = "assigneeId")
     public abstract void update(TaskUpdateDTO update, @MappingTarget Task model);
+
+    @Named("statusSlug")
+    public TaskStatus statusSlugToModel(String slug) {
+        return statusRepository.findBySlug(slug)
+                .orElseThrow();
+    }
 
 }

@@ -10,6 +10,8 @@ import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +66,6 @@ public class TaskStatusControllerTest {
 
     @BeforeEach
     void setUp() {
-        statusRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
@@ -73,6 +74,11 @@ public class TaskStatusControllerTest {
 
         testStatus = Instancio.of(modelGenerator.getStatusModel()).create();
         statusRepository.save(testStatus);
+    }
+
+    @AfterEach
+    void tearDown() {
+        statusRepository.deleteAll();
     }
 
     @Test

@@ -11,6 +11,7 @@ import hexlet.code.repository.UserRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -76,6 +76,7 @@ public class TaskControllerTest {
     void setUp() {
         taskRepository.deleteAll();
         userRepository.deleteAll();
+        statusRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
@@ -100,6 +101,13 @@ public class TaskControllerTest {
         // Добавляем для объекта testTask поля assignee и testStatus
         testTask.setAssignee(user);
         testTask.setTaskStatus(testStatus);
+    }
+
+    @AfterEach
+    void tearDown() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        statusRepository.deleteAll();
     }
 
     // Метод тестирует отображение всех задач по get запросу на адрес /api/tasks
@@ -131,21 +139,13 @@ public class TaskControllerTest {
         assertThatJson(body).and(
                 v -> v.node("title").isEqualTo(testTask.getName()),
                 v -> v.node("content").isEqualTo(testTask.getDescription()),
-                v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()),
+                v -> v.node("assignee_id").isEqualTo(testTask.getAssignee().getId()),
                 v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug())
         );
     }
 
     @Test
     void testCreate() throws Exception { // - не работает
-
-//    Ошибка связана с тем, что Hibernate пытается сохранить объект Task,
-//    который ссылается на объект TaskStatus, но этот объект TaskStatus не был сохранен
-//    в базе данных (он находится в состоянии "transient").
-//    Это приводит к исключению org.hibernate.TransientPropertyValueException, так как свойство taskStatus
-//    в объекте Task не может быть null (оно помечено как not-null), а ссылается на объект,
-//    который еще не существует в базе данных.
-//    как исправить ошибку не знаю
 
         var dto = taskMapper.map(testTask);
 
@@ -163,39 +163,6 @@ public class TaskControllerTest {
         assertThat(task.getAssignee().getId()).isEqualTo(testTask.getAssignee().getId());
         assertThat(task.getTaskStatus().getSlug()).isEqualTo(testTask.getTaskStatus().getSlug());
     }
-
-//    @Test
-//    void testCreate() throws Exception { // - не работает
-//
-//    Ошибка связана с тем, что Hibernate пытается сохранить объект Task,
-//    который ссылается на объект TaskStatus, но этот объект TaskStatus не был сохранен
-//    в базе данных (он находится в состоянии "transient").
-//    Это приводит к исключению org.hibernate.TransientPropertyValueException, так как свойство taskStatus
-//    в объекте Task не может быть null (оно помечено как not-null), а ссылается на объект,
-//    который еще не существует в базе данных.
-//    как исправить ошибку не знаю
-//
-//        var data = Instancio.of(modelGenerator.getTaskModel())
-//                .create();
-//        var status = Instancio.of(modelGenerator.getStatusModel()).create();
-//        statusRepository.save(status);
-//
-//        var dto = taskMapper.map(data);
-//        dto.setStatus(status.getSlug());
-//
-//        var request = post("/api/tasks").with(jwt())
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(dto));
-//        mockMvc.perform(request)
-//                .andExpect(status().isCreated());
-//
-//        var task = taskRepository.findByName(dto.getTitle()).orElse(null);
-//
-//        assertNotNull(task);
-//        assertThat(task.getName()).isEqualTo(data.getName());
-//        assertThat(task.getDescription()).isEqualTo(data.getDescription());
-//        assertThat(task.getIndex()).isEqualTo(data.getIndex());
-//    }
 
     @Test
     void testUpdate() throws Exception {

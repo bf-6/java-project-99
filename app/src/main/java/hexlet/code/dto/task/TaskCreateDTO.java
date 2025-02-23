@@ -11,13 +11,12 @@ public class TaskCreateDTO {
 
     @Size(min = 1)
     @NotBlank
-    private String name;
+    private String title;
 
     private long index;
-    private String description;
+    private String content;
 
     @NotBlank
-    private String taskStatus;
-
+    private String status;
     private long assigneeId;
 }

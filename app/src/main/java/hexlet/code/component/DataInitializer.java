@@ -41,7 +41,8 @@ public class DataInitializer implements ApplicationRunner {
         ));
 
         defaultStatuses.entrySet().stream()
-                .filter(entry -> statusRepository.findBySlug(entry.getValue()).isEmpty()) // Проверяем, есть ли запись в базе
+                // Проверяем, есть ли запись в базе
+                .filter(entry -> statusRepository.findBySlug(entry.getValue()).isEmpty())
                 .map(entry -> {
                     TaskStatus status = new TaskStatus();
                     status.setName(entry.getKey());

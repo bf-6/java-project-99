@@ -1,5 +1,6 @@
 package hexlet.code.util;
 
+import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
@@ -19,6 +20,7 @@ public class ModelGenerator {
     private Model<User> userModel;
     private Model<TaskStatus> statusModel;
     private Model<Task> taskModel;
+    private Model<TaskCreateDTO> taskCreateDTOModel;
 
     @Autowired
     private Faker faker;
@@ -42,7 +44,7 @@ public class ModelGenerator {
         taskModel = Instancio.of(Task.class)
                 .ignore(Select.field(Task::getId))
                 .supply(Select.field(Task::getName), () -> faker.lorem().word())
-                .supply(Select.field(Task::getDescription), () -> faker.lorem().paragraph())
+                .supply(Select.field(Task::getDescription), () -> faker.lorem().word())
                 .supply(Select.field(Task::getIndex), () -> faker.number().randomNumber())
                 .toModel();
     }

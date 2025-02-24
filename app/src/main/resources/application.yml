@@ -14,6 +14,15 @@ spring:
   profiles:
     default: development
 
+sentry:
+  dsn: https://c6d83bea1aa07268ebf000f011c57d62@o4508874985177088.ingest.de.sentry.io/4508875035443280
+  # Add data like request headers and IP for users,
+  # see https://docs.sentry.io/platforms/java/guides/spring-boot/data-management/data-collected/ for more info
+  send-default-pii: true
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for tracing.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
+
 rsa:
   private-key: classpath:certs/private.pem
   public-key: classpath:certs/public.pem

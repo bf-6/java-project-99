@@ -1,3 +1,4 @@
+
 check-deps:
 	./gradlew dependencyUpdates -Drevision=release
 
@@ -26,11 +27,5 @@ test:
 
 report:
 	./gradlew jacocoTestReport
-
-image-build:
-	docker build -t hexletcomponents/java-javalin-example:latest .
-
-image-push:
-	docker push hexletcomponents/java-javalin-example:latest
 
 .PHONY: build

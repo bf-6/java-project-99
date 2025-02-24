@@ -2,7 +2,7 @@ check-deps:
 	./gradlew dependencyUpdates -Drevision=release
 
 dev:
-	./gradlew bootRun
+	./gradlew run
 
 setup:
 	gradle wrapper --gradle-version 8.9

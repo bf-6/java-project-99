@@ -7,5 +7,17 @@
 
 ## Деплой на Render
 
-
 https://java-task-manager-jg9n.onrender.com
+
+## Инструкции
+
+### Для запуска проекта локально
+
+```shell
+make install
+make build
+make run-dist
+# после выполнения команд перейдите по ссылке localhost:8080
+# имя пользователя hexlet@exmaple.com
+# пароль qwerty
+```

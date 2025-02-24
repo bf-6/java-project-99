@@ -66,6 +66,7 @@ dependencies {
 	implementation("net.datafaker:datafaker:2.4.2")
 	testImplementation ("org.instancio:instancio-junit:5.3.0")
 
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
 
 }
 

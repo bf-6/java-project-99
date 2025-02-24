@@ -20,7 +20,6 @@ import org.mapstruct.ReportingPolicy;
 public abstract class UserMapper {
 
     @Mapping(source = "password", target = "passwordDigest")
-
     public abstract User map(UserCreateDTO model);
 
     public abstract UserDTO map(User model);

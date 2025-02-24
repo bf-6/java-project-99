@@ -10,7 +10,6 @@ import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

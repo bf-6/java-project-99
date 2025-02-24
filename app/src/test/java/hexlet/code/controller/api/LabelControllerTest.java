@@ -2,17 +2,14 @@ package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hexlet.code.dto.user.UserDTO;
-import hexlet.code.mapper.UserMapper;
-import hexlet.code.model.User;
-import hexlet.code.repository.UserRepository;
+import hexlet.code.dto.label.LabelDTO;
+import hexlet.code.mapper.LabelMapper;
+import hexlet.code.model.Label;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
 import net.datafaker.Faker;
-import org.instancio.Instancio;
 import org.assertj.core.api.Assertions;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,7 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UsersControllerTest {
+public class LabelControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -51,7 +50,7 @@ public class UsersControllerTest {
     private Faker faker;
 
     @Autowired
-    private UserRepository userRepository;
+    private LabelRepository labelRepository;
 
     @Autowired
     private ModelGenerator modelGenerator;
@@ -60,42 +59,43 @@ public class UsersControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private LabelMapper labelMapper;
 
-    private User testUser;
+    private Label testLabel;
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
+        labelRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .apply(springSecurity())
                 .build();
 
-        testUser = Instancio.of(modelGenerator.getUserModel()).create();
-        userRepository.save(testUser);
-
+        testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+        labelRepository.save(testLabel);
     }
 
     @AfterEach
     void tearDown() {
-        userRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     @Test
     void testIndex() throws Exception {
-        var response = mockMvc.perform(get("/api/users").with(jwt()))
+        var response = mockMvc.perform(get("/api/labels").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
         var body = response.getContentAsString();
 
-        List<UserDTO> userDTOList = objectMapper.readValue(body, new TypeReference<>() { });
+        assertThatJson(body).isArray();
 
-        var actual = userDTOList.stream().map(userMapper::map).toList();
-        var expected = userRepository.findAll();
+        List<LabelDTO> labelDTOList = objectMapper.readValue(body, new TypeReference<>() { });
+
+        var actual = labelDTOList.stream().map(labelMapper::map).toList();
+        var expected = labelRepository.findAll();
 
         assertThat(actual.size()).isEqualTo(expected.size());
         Assertions.assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
@@ -103,52 +103,29 @@ public class UsersControllerTest {
 
     @Test
     void testCreate() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel())
+        var data = Instancio.of(modelGenerator.getLabelModel())
                 .create();
 
-        var request = post("/api/users").with(jwt())
+        var request = post("/api/labels").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(data));
         mockMvc.perform(request)
                 .andExpect(status().isCreated());
 
-        var user = userRepository.findByEmail(data.getEmail()).orElse(null);
+        var label = labelRepository.findByName(data.getName()).orElse(null);
 
-        assertNotNull(user);
-        assertThat(user.getFirstName()).isEqualTo(data.getFirstName());
-        assertThat(user.getLastName()).isEqualTo(data.getLastName());
-    }
-
-    @Test
-    void testPartialUpdate() throws Exception {
-        var name = faker.name().firstName();
-        var data = new HashMap<>();
-        data.put("firstName", name);
-
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(data));
-
-        mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andReturn();
-
-        var user = userRepository.findById(testUser.getId()).orElseThrow();
-        assertThat(user.getFirstName()).isEqualTo((name));
+        assertNotNull(label);
+        assertThat(label.getName()).isEqualTo(data.getName());
     }
 
     @Test
     void testUpdate() throws Exception {
-        var firstName = faker.name().firstName();
-        var lastName = faker.name().lastName();
-        var email = faker.internet().emailAddress();
+        var name = faker.lorem().word();
 
         var data = new HashMap<>();
-        data.put("firstName", firstName);
-        data.put("lastName", lastName);
-        data.put("email", email);
+        data.put("name", name);
 
-        var request = put("/api/users/" + testUser.getId()).with(jwt())
+        var request = put("/api/labels/" + testLabel.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(data));
 
@@ -156,40 +133,34 @@ public class UsersControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        var user = userRepository.findById(testUser.getId()).orElseThrow();
-        assertThat(user.getFirstName()).isEqualTo((firstName));
-        assertThat(user.getLastName()).isEqualTo((lastName));
-        assertThat(user.getEmail()).isEqualTo((email));
+        var label = labelRepository.findById(testLabel.getId()).orElseThrow();
+        assertThat(label.getName()).isEqualTo(name);
     }
 
     @Test
     void testShow() throws Exception {
-        var request = get("/api/users/" + testUser.getId()).with(jwt());
+        var request = get("/api/labels/" + testLabel.getId()).with(jwt());
         var result = mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
-                v -> v.node("email").isEqualTo(testUser.getEmail()),
-                v -> v.node("firstName").isEqualTo(testUser.getFirstName()),
-                v -> v.node("lastName").isEqualTo(testUser.getLastName())
+                v -> v.node("name").isEqualTo(testLabel.getName())
         );
     }
 
     @Test
     void testDelete() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel())
+        var data = Instancio.of(modelGenerator.getLabelModel())
                 .create();
 
-        userRepository.save(data);
+        labelRepository.save(data);
 
-        var request = delete("/api/users/" + data.getId()).with(jwt());
-
+        var request = delete("/api/labels/" + data.getId()).with(jwt());
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        data = userRepository.findById(data.getId()).orElse(null);
+        data = labelRepository.findById(data.getId()).orElse(null);
         assertThat(data).isNull();
     }
-
 }

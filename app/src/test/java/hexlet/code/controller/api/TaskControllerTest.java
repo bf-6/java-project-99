@@ -2,9 +2,11 @@ package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,6 +61,9 @@ public class TaskControllerTest {
     private TaskStatusRepository statusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private ModelGenerator modelGenerator;
 
     @Autowired
@@ -72,11 +78,14 @@ public class TaskControllerTest {
 
     private TaskStatus testStatus;
 
+    private Label testLabel;
+
     @BeforeEach
     void setUp() {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         statusRepository.deleteAll();
+        labelRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
@@ -95,12 +104,18 @@ public class TaskControllerTest {
         testStatus = Instancio.of(modelGenerator.getStatusModel()).create();
         statusRepository.save(testStatus);
 
+        // Создаем новую метку и сохраняем ее в базе
+        testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
+        labelRepository.save(testLabel);
+        Set<Label> labelSet = Set.of(testLabel);
+
         // Создаем новую задачу (объект класса Task)
         testTask = Instancio.of(modelGenerator.getTaskModel()).create();
 
         // Добавляем для объекта testTask поля assignee и testStatus
         testTask.setAssignee(user);
         testTask.setTaskStatus(testStatus);
+        testTask.setLabels(labelSet);
     }
 
     @AfterEach
@@ -108,6 +123,7 @@ public class TaskControllerTest {
         taskRepository.deleteAll();
         userRepository.deleteAll();
         statusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     // Метод тестирует отображение всех задач по get запросу на адрес /api/tasks

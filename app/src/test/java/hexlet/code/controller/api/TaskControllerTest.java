@@ -1,6 +1,7 @@
 package hexlet.code.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
@@ -138,6 +139,100 @@ public class TaskControllerTest {
         var body = result.getResponse().getContentAsString();
 
         assertThatJson(body).isArray();
+    }
+
+    @Test
+    public void testIndexWithTitleContains() throws Exception {
+        var param = new TaskParamsDTO();
+        param.setTitleCont(testTask.getName().substring(3).toUpperCase());
+        taskRepository.save(testTask);
+        var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()).with(jwt()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("title").asString().containsIgnoringCase(testTask.getName()))
+        );
+    }
+
+    @Test
+    public void testIndexWithAssigneeId() throws Exception {
+        var param = new TaskParamsDTO();
+        param.setAssigneeId(anotherUser.getId());
+        taskRepository.save(testTask);
+        var result = mockMvc.perform(get("/api/tasks?assigneeId=" + param.getAssigneeId()).with(jwt()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()))
+        );
+    }
+
+    @Test
+    public void testIndexWithStatus() throws Exception {
+        var param = new TaskParamsDTO();
+        param.setStatus(testStatus.getSlug());
+        taskRepository.save(testTask);
+        var result = mockMvc.perform(get("/api/tasks?status=" + param.getStatus()).with(jwt()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("status").asString().containsIgnoringCase(testTask.getTaskStatus().getSlug()))
+        );
+    }
+
+    @Test
+    public void testIndexWithLabelId() throws Exception {
+        var param = new TaskParamsDTO();
+        param.setLabelId(testLabel.getId());
+        taskRepository.save(testTask);
+        var result = mockMvc.perform(get("/api/tasks?labelId=" + param.getLabelId()).with(jwt()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("labelId").isEqualTo(testTask.getLabels().stream()
+                                .map(Label::getId)
+                                .filter(id -> labelRepository.findById(testLabel.getId())
+                                        .equals(id))))
+        );
+    }
+
+    @Test
+    public void testIndexWithParams() throws Exception {
+        var param = new TaskParamsDTO();
+        param.setAssigneeId(anotherUser.getId());
+        param.setStatus(testStatus.getSlug());
+        param.setLabelId(testLabel.getId());
+        param.setTitleCont(testTask.getName().substring(3).toUpperCase());
+        taskRepository.save(testTask);
+        var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()
+                        + "&assigneeId=" + param.getAssigneeId()
+                        + "&status=" + param.getStatus()
+                        + "&labelId=" + param.getLabelId()).with(jwt()))
+                .andExpect(status().isOk())
+                .andReturn();
+        var body = result.getResponse().getContentAsString();
+        assertThatJson(body).isArray().allSatisfy(element ->
+                assertThatJson(element)
+                        .and(v -> v.node("title").isEqualTo(testTask.getName()))
+                        .and(v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()))
+                        .and(v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()))
+                        .and(v -> v.node("labelId").isEqualTo(testTask.getLabels().stream()
+                                .map(Label::getId)
+                                .filter(id -> labelRepository.findById(testLabel.getId())
+                                        .equals(id))))
+        );
     }
 
     // Метод тестирует отображение конкретной задачи по её id по get запросу на адрес /api/tasks/{id}

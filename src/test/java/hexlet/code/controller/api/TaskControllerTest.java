@@ -93,27 +93,21 @@ public class TaskControllerTest {
                 .apply(springSecurity())
                 .build();
 
-        // Создаем тестового пользователя и сохраняем его в базе с помощью репозитория
         var user = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(user);
 
-        // Создаем еще одного пользователя и также сохраняем его в базе
         anotherUser = Instancio.of(modelGenerator.getUserModel()).create();
         userRepository.save(anotherUser);
 
-        // Создаем новый статус задачи (объект класса TaskStatus) и сохраняем его в базе
         testStatus = Instancio.of(modelGenerator.getStatusModel()).create();
         statusRepository.save(testStatus);
 
-        // Создаем новую метку и сохраняем ее в базе
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
         labelRepository.save(testLabel);
         Set<Label> labelSet = Set.of(testLabel);
 
-        // Создаем новую задачу (объект класса Task)
         testTask = Instancio.of(modelGenerator.getTaskModel()).create();
 
-        // Добавляем для объекта testTask поля assignee и testStatus
         testTask.setAssignee(user);
         testTask.setTaskStatus(testStatus);
         testTask.setLabels(labelSet);
@@ -127,7 +121,6 @@ public class TaskControllerTest {
         labelRepository.deleteAll();
     }
 
-    // Метод тестирует отображение всех задач по get запросу на адрес /api/tasks
     @Test
     void testIndex() throws Exception {
         // Сохраняем задачу (объект класса Task) в базе
@@ -214,7 +207,7 @@ public class TaskControllerTest {
         param.setAssigneeId(anotherUser.getId());
         param.setStatus(testStatus.getSlug());
         param.setLabelId(testLabel.getId());
-        param.setTitleCont(testTask.getName().substring(3).toUpperCase());
+        param.setTitleCont(testTask.getName().substring(0).toUpperCase());
         taskRepository.save(testTask);
         var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()
                         + "&assigneeId=" + param.getAssigneeId()
@@ -235,7 +228,6 @@ public class TaskControllerTest {
         );
     }
 
-    // Метод тестирует отображение конкретной задачи по её id по get запросу на адрес /api/tasks/{id}
     @Test
     void testShow() throws Exception {
         // Сохраняем задачу в базе
@@ -283,8 +275,6 @@ public class TaskControllerTest {
 
         dto.setTitle("new title");
         dto.setContent("new description");
-//        dto.setAssigneeId(anotherUser.getId()); //пытается изменить id в самом объекте User, что приводит к ошибке -
-        // как исправить не знаю.
         dto.setStatus(testStatus.getSlug());
 
         var request = put("/api/tasks/{id}", testTask.getId()).with(jwt())
@@ -297,7 +287,6 @@ public class TaskControllerTest {
 
         assertThat(task.getName()).isEqualTo(dto.getTitle());
         assertThat(task.getDescription()).isEqualTo(dto.getContent());
-//        assertThat(task.getAssignee().getId()).isEqualTo(dto.getAssigneeId());
         assertThat(task.getTaskStatus().getSlug()).isEqualTo(dto.getStatus());
     }
 

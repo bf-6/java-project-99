@@ -1,10 +1,10 @@
 FROM gradle:8.9-jdk21
 
-WORKDIR /app
+WORKDIR .
 
 COPY . .
 
-RUN ./gradlew installDist
+RUN gradle installDist
 
 CMD ./build/install/app/bin/app
 

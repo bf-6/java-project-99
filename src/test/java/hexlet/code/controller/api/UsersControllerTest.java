@@ -124,6 +124,7 @@ public class UsersControllerTest {
         var name = faker.name().firstName();
         var data = new HashMap<>();
         data.put("firstName", name);
+        data.put("password", testUser.getPassword());
 
         var request = put("/api/users/" + testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -147,6 +148,7 @@ public class UsersControllerTest {
         data.put("firstName", firstName);
         data.put("lastName", lastName);
         data.put("email", email);
+        data.put("password", "qwerty123");
 
         var request = put("/api/users/" + testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)

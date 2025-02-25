@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.task.status.TaskStatusCreateDTO;
 import hexlet.code.dto.task.status.TaskStatusDTO;
 import hexlet.code.dto.task.status.TaskStatusUpdateDTO;
+import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
@@ -30,6 +31,12 @@ public class TaskStatusService {
     }
 
     public TaskStatusDTO create(TaskStatusCreateDTO statusData) {
+        statusRepository.findAll().stream()
+                .filter(existingStatus -> existingStatus.equals(statusData))
+                .findAny()
+                .ifPresent(existing -> {
+                    throw new ResourceAlreadyExistsException("Status " + statusData.getName() + " already exists");
+                });
         var status = statusMapper.map(statusData);
         statusRepository.save(status);
         return statusMapper.map(status);

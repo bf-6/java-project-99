@@ -124,7 +124,6 @@ public class UsersControllerTest {
         var name = faker.name().firstName();
         var data = new HashMap<>();
         data.put("firstName", name);
-        data.put("password", testUser.getPassword());
 
         var request = put("/api/users/" + testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +147,6 @@ public class UsersControllerTest {
         data.put("firstName", firstName);
         data.put("lastName", lastName);
         data.put("email", email);
-        data.put("password", "qwerty123");
 
         var request = put("/api/users/" + testUser.getId()).with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -159,9 +157,9 @@ public class UsersControllerTest {
                 .andReturn();
 
         var user = userRepository.findById(testUser.getId()).orElseThrow();
-        assertThat(user.getFirstName()).isEqualTo((firstName));
-        assertThat(user.getLastName()).isEqualTo((lastName));
-        assertThat(user.getEmail()).isEqualTo((email));
+        assertThat(user.getFirstName()).isEqualTo(firstName);
+        assertThat(user.getLastName()).isEqualTo(lastName);
+        assertThat(user.getEmail()).isEqualTo(email);
     }
 
     @Test

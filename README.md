@@ -20,7 +20,7 @@ https://java-task-manager-jg9n.onrender.com
 ```shell
 make install
 make build
-make run-dist
+make dev
 # после выполнения команд перейдите по ссылке localhost:8080
 # имя пользователя hexlet@exmaple.com
 # пароль qwerty

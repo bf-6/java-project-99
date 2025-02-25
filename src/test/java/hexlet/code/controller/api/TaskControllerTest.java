@@ -123,7 +123,6 @@ public class TaskControllerTest {
 
     @Test
     void testIndex() throws Exception {
-        // Сохраняем задачу (объект класса Task) в базе
         taskRepository.save(testTask);
 
         var result = mockMvc.perform(get("/api/tasks").with(jwt()))
@@ -230,7 +229,6 @@ public class TaskControllerTest {
 
     @Test
     void testShow() throws Exception {
-        // Сохраняем задачу в базе
         taskRepository.save(testTask);
 
         var request = get("/api/tasks/{id}", testTask.getId()).with(jwt());

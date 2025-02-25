@@ -9,7 +9,6 @@ import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.specification.TaskSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +25,9 @@ public class TaskService {
     @Autowired
     private TaskSpecification specBuilder;
 
-    public List<TaskDTO> index(TaskParamsDTO params, int page) {
+    public List<TaskDTO> index(TaskParamsDTO params) {
         var spec = specBuilder.build(params);
-        return taskRepository.findAll(spec, PageRequest.of(page - 1, 10)).stream()
+        return taskRepository.findAll(spec).stream()
                 .map(taskMapper::map).toList();
     }
 

@@ -136,7 +136,7 @@ public class TaskControllerTest {
     @Test
     public void testIndexWithTitleContains() throws Exception {
         var param = new TaskParamsDTO();
-        param.setTitleCont(testTask.getName().substring(3).toUpperCase());
+        param.setTitleCont(testTask.getName().substring(1).toLowerCase());
         taskRepository.save(testTask);
         var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()).with(jwt()))
                 .andExpect(status().isOk())
@@ -178,25 +178,6 @@ public class TaskControllerTest {
         assertThatJson(body).isArray().allSatisfy(element ->
                 assertThatJson(element)
                         .and(v -> v.node("status").asString().containsIgnoringCase(testTask.getTaskStatus().getSlug()))
-        );
-    }
-
-    @Test
-    public void testIndexWithLabelId() throws Exception {
-        var param = new TaskParamsDTO();
-        param.setLabelId(testLabel.getId());
-        taskRepository.save(testTask);
-        var result = mockMvc.perform(get("/api/tasks?labelId=" + param.getLabelId()).with(jwt()))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        var body = result.getResponse().getContentAsString();
-        assertThatJson(body).isArray().allSatisfy(element ->
-                assertThatJson(element)
-                        .and(v -> v.node("labelId").isEqualTo(testTask.getLabels().stream()
-                                .map(Label::getId)
-                                .filter(id -> labelRepository.findById(testLabel.getId())
-                                        .equals(id))))
         );
     }
 

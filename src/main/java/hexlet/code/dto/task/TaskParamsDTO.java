@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class TaskParamsDTO {
     private String titleCont;
-    private long assigneeId;
+    private Long assigneeId;
     private String status;
-    private long labelId;
+    private Long labelId;
 }

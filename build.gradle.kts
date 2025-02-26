@@ -71,7 +71,12 @@ dependencies {
 
 }
 
+//tasks.withType<Checkstyle> {
+//	enabled = false
+//}
+
 tasks.withType<Test> {
+//	enabled = false
 	useJUnitPlatform()
 }
 
@@ -107,3 +112,15 @@ sentry {
 tasks.sentryBundleSourcesJava {
 	enabled = System.getenv("SENTRY_AUTH_TOKEN") != null
 }
+
+//tasks.register<JavaExec>("debug") {
+//	group = "application"
+//	description = "Runs the application in debug mode"
+//
+//	mainClass.set("hexlet.code.AppApplication") // Укажите свой основной класс с методом main()
+//	classpath = sourceSets["main"].runtimeClasspath
+//
+//	jvmArgs = listOf(
+//		"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+//	)
+//}

@@ -27,8 +27,9 @@ public class TaskService {
 
     public List<TaskDTO> index(TaskParamsDTO params) {
         var spec = specBuilder.build(params);
-        return taskRepository.findAll(spec).stream()
-                .map(taskMapper::map).toList();
+        var tasks = taskRepository.findAll(spec);
+        var result = tasks.stream().map(taskMapper::map);
+        return result.toList();
     }
 
     public TaskDTO show(long id) {

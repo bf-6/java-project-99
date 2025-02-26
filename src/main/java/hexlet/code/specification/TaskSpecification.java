@@ -1,7 +1,9 @@
 package hexlet.code.specification;
 
 import hexlet.code.dto.task.TaskParamsDTO;
+import hexlet.code.model.Label;
 import hexlet.code.model.Task;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +34,12 @@ public class TaskSpecification {
     }
 
     private Specification<Task> withLabelId(Long labelId) {
-        return (root, query, cb) ->
-                labelId == null ? cb.conjunction() : cb.equal(root.get("labels").get("id"), labelId);
+        return (root, query, cb) -> {
+            if (labelId == null) {
+                return cb.conjunction();
+            }
+            Join<Task, Label> labelsJoin = root.join("labels");
+            return cb.equal(labelsJoin.get("id"), labelId);
+        };
     }
 }

@@ -4,6 +4,7 @@ import hexlet.code.dto.task.TaskCreateDTO;
 import hexlet.code.dto.task.TaskDTO;
 import hexlet.code.dto.task.TaskParamsDTO;
 import hexlet.code.dto.task.TaskUpdateDTO;
+import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
 import hexlet.code.repository.TaskRepository;
@@ -35,6 +36,12 @@ public class TaskService {
 
     public TaskDTO create(TaskCreateDTO taskData) {
         var task = taskMapper.map(taskData);
+        taskRepository.findAll().stream()
+                .filter(existingTask -> existingTask.equals(task))
+                .findAny()
+                .ifPresent(existing -> {
+                    throw new ResourceAlreadyExistsException("Task " + task.getName() + " already exists");
+                });
         taskRepository.save(task);
         return taskMapper.map(task);
     }

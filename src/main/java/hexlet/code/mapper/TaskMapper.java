@@ -55,13 +55,6 @@ public abstract class TaskMapper {
     @Mapping(target = "labels", source = "labelIds", qualifiedByName = "getLabels")
     public abstract void update(TaskUpdateDTO update, @MappingTarget Task model);
 
-    @Mapping(source = "name", target = "title")
-    @Mapping(source = "description", target = "content")
-    @Mapping(source = "taskStatus.slug", target = "status")
-    @Mapping(source = "assignee.id", target = "assigneeId")
-    @Mapping(source = "labels", target = "labelIds", qualifiedByName = "getLabelIds")
-    public abstract TaskCreateDTO mapToCreateDTO(Task model);
-
     @Named("statusSlug")
     public TaskStatus statusSlugToModel(String slug) {
         return statusRepository.findBySlug(slug)

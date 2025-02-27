@@ -231,7 +231,7 @@ public class TaskControllerTest {
 
         taskRepository.delete(testTask);
 
-        var dto = taskMapper.mapToCreateDTO(testTask);
+        var dto = taskMapper.map(testTask);
 
         var request = post("/api/tasks").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)

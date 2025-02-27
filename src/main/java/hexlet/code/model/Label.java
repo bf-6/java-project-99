@@ -40,6 +40,6 @@ public class Label implements BaseEntity {
     private Set<Task> tasks;
 
     @CreatedDate
-    private LocalDate createAt;
+    private LocalDate createdAt;
 
 }

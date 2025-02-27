@@ -1,6 +1,5 @@
 package hexlet.code.dto.user;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,7 +15,6 @@ public class UserUpdateDTO {
 
     private JsonNullable<String> lastName;
 
-    @Column(unique = true)
     @Email
     private JsonNullable<String> email;
 

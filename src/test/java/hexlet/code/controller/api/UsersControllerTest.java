@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -64,6 +65,9 @@ public class UsersControllerTest {
 
     private User testUser;
 
+    private SecurityMockMvcRequestPostProcessors.JwtRequestPostProcessor token;
+
+
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
@@ -74,6 +78,7 @@ public class UsersControllerTest {
                 .build();
 
         testUser = Instancio.of(modelGenerator.getUserModel()).create();
+        token = jwt().jwt(builder -> builder.subject(testUser.getEmail()));
         userRepository.save(testUser);
 
     }
@@ -183,17 +188,12 @@ public class UsersControllerTest {
 
     @Test
     void testDelete() throws Exception {
-        var data = Instancio.of(modelGenerator.getUserModel())
-                .create();
-
-        userRepository.save(data);
-
-        var request = delete("/api/users/" + data.getId()).with(jwt());
+        var request = delete("/api/users/" + testUser.getId()).with(token);
 
         mockMvc.perform(request)
                 .andExpect(status().isNoContent());
 
-        data = userRepository.findById(data.getId()).orElse(null);
+        var data = userRepository.findById(testUser.getId()).orElse(null);
         assertThat(data).isNull();
     }
 

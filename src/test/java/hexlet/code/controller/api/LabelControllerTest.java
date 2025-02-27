@@ -120,7 +120,7 @@ public class LabelControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        var name = faker.lorem().word();
+        var name = "update";
 
         var data = new HashMap<>();
         data.put("name", name);

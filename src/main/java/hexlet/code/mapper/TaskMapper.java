@@ -17,11 +17,8 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 
 @Mapper(
         uses = { JsonNullableMapper.class },
@@ -66,12 +63,7 @@ public abstract class TaskMapper {
 
     @Named("getLabels")
     Set<Label> getLabels(Set<Long> labelIds) {
-        return labelRepository.findAll()
-                .stream()
-                .filter(label -> Optional.ofNullable(labelIds)
-                        .orElse(Collections.emptySet())
-                        .contains(label.getId()))
-                .collect(Collectors.toSet());
+        return labelRepository.findByIdIn(labelIds);
     }
 
     @Named("getLabelIds")

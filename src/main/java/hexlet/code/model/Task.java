@@ -50,7 +50,7 @@ public class Task implements BaseEntity {
     private User assignee;
 
     @CreatedDate
-    private LocalDate createAt;
+    private LocalDate createdAt;
 
     @ManyToMany
     private Set<Label> labels;

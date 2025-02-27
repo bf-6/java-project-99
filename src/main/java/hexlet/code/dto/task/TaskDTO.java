@@ -22,7 +22,7 @@ public class TaskDTO {
     private long assigneeId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate createAt;
+    private LocalDate createdAt;
 
     private Set<Long> labelIds;
 }

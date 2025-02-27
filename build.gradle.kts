@@ -33,42 +33,74 @@ repositories {
 	mavenCentral()
 }
 
+//dependencies {
+//	implementation("org.springframework.boot:spring-boot-starter")
+//	testImplementation("org.springframework.boot:spring-boot-starter-test")
+//	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+//	implementation("org.springframework.boot:spring-boot-starter-web")
+//	implementation("org.springframework.boot:spring-boot-devtools")
+//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+//	implementation("org.springframework.boot:spring-boot-starter-validation")
+//	testImplementation("org.springframework.security:spring-security-test")
+//	implementation("org.springframework.boot:spring-boot-starter-security")
+//	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+//
+//	implementation("org.mapstruct:mapstruct:1.5.5.Final")
+//	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
+//	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
+//
+//
+//
+//	// assertj // jupiter
+//	testImplementation("org.assertj:assertj-core:3.27.2")
+//	testImplementation(platform("org.junit:junit-bom:5.10.0"))
+//	testImplementation("org.junit.jupiter:junit-jupiter")
+//	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
+//
+//
+//	// postgresql
+//	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+//	implementation("org.postgresql:postgresql:42.7.5")
+//
+//	runtimeOnly("com.h2database:h2:2.3.232")
+//
+//	implementation("net.datafaker:datafaker:2.4.2")
+//	testImplementation ("org.instancio:instancio-junit:5.3.0")
+//
+//	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+//
+//}
+
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-devtools")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
+	// implementation("io.github.wimdeblauwe:error-handling-spring-boot-starter:4.2.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	testImplementation("org.springframework.security:spring-security-test")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
 
+	implementation("org.instancio:instancio-junit:3.3.0")
+	implementation("org.apache.commons:commons-lang3:3.13.0")
+	implementation("org.apache.commons:commons-text:1.10.0")
+	implementation("net.datafaker:datafaker:2.0.1")
+
+	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api:3.1.0")
+
+	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 	implementation("org.mapstruct:mapstruct:1.5.5.Final")
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
-	implementation("org.openapitools:jackson-databind-nullable:0.2.6")
 
+	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-
-	// assertj // jupiter
-	testImplementation("org.assertj:assertj-core:3.27.2")
-	testImplementation(platform("org.junit:junit-bom:5.10.0"))
-	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
 
-
-	// postgresql
-	// https://mvnrepository.com/artifact/org.postgresql/postgresql
-	implementation("org.postgresql:postgresql:42.7.5")
-
-	runtimeOnly("com.h2database:h2:2.3.232")
-
-	implementation("net.datafaker:datafaker:2.4.2")
-	testImplementation ("org.instancio:instancio-junit:5.3.0")
-
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
-
+	runtimeOnly("com.h2database:h2")
+	// runtimeOnly("org.postgresql:postgresql:42.6.0")
 }
 
 //tasks.withType<Checkstyle> {

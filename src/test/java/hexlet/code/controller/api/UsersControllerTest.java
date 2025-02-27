@@ -84,6 +84,11 @@ public class UsersControllerTest {
     }
 
     @Test
+    void contextLoads() {
+        // Тест проверяет, что контекст Spring загружается
+    }
+
+    @Test
     void testIndex() throws Exception {
         var response = mockMvc.perform(get("/api/users").with(jwt()))
                 .andExpect(status().isOk())

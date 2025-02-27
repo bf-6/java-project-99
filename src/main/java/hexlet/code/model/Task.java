@@ -32,13 +32,13 @@ public class Task implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Size(min = 1)
     @NotBlank
     private String name;
 
-    private long index;
+    private Long index;
 
     private String description;
 

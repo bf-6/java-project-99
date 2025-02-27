@@ -34,7 +34,7 @@ public class User implements UserDetails, BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     private String firstName;
 

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Setter
 public class LabelDTO {
 
-    private long id;
+    private Long id;
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

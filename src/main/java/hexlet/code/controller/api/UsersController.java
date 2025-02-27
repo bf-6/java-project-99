@@ -39,7 +39,7 @@ public class UsersController {
     }
 
     @GetMapping("/{id}")
-    public UserDTO show(@PathVariable long id) {
+    public UserDTO show(@PathVariable Long id) {
         return userService.show(id);
     }
 
@@ -51,14 +51,14 @@ public class UsersController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDTO update(@RequestBody @Valid UserUpdateDTO userDTO, @PathVariable long id) {
+    public UserDTO update(@RequestBody @Valid UserUpdateDTO userDTO, @PathVariable Long id) {
         return userService.update(id, userDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("@userUtils.getCurrentUser().getId() == #id")
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable Long id) {
         userService.destroy(id);
     }
 

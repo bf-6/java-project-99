@@ -30,7 +30,7 @@ public class Label implements BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @EqualsAndHashCode.Include
-    private long id;
+    private Long id;
 
     @Size(min = 3, max = 1000)
     @Column(unique = true)

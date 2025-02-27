@@ -36,7 +36,7 @@ public class TaskStatusController {
     }
 
     @GetMapping("/{id}")
-    public TaskStatusDTO show(@PathVariable long id) {
+    public TaskStatusDTO show(@PathVariable Long id) {
         return statusService.show(id);
     }
 
@@ -48,13 +48,13 @@ public class TaskStatusController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public TaskStatusDTO update(@RequestBody @Valid TaskStatusUpdateDTO statusUpdateDTO, @PathVariable long id) {
+    public TaskStatusDTO update(@RequestBody @Valid TaskStatusUpdateDTO statusUpdateDTO, @PathVariable Long id) {
         return statusService.update(id, statusUpdateDTO);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable Long id) {
         statusService.destroy(id);
     }
 

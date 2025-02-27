@@ -229,7 +229,7 @@ public class TaskControllerTest {
     @Test
     void testCreate() throws Exception { // - не работает
 
-        var dto = taskMapper.map(testTask);
+        var dto = taskMapper.mapToCreateDTO(testTask);
 
         var request = post("/api/tasks").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)

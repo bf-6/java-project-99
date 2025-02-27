@@ -229,6 +229,8 @@ public class TaskControllerTest {
     @Test
     void testCreate() throws Exception { // - не работает
 
+        taskRepository.delete(testTask);
+
         var dto = taskMapper.mapToCreateDTO(testTask);
 
         var request = post("/api/tasks").with(jwt())

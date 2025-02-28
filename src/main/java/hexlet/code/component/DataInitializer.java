@@ -64,7 +64,7 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     void getDefaultLabels() {
-        List.of("feature", "bug").stream()
+        List.of("feature", "bug", "null", "unique").stream()
                 .filter(name -> labelRepository.findByName(name).isEmpty())
                 .map(name -> {
                     var labelData = new Label();

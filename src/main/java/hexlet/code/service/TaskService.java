@@ -7,12 +7,15 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.exception.ResourceAlreadyExistsException;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskMapper;
+import hexlet.code.model.Label;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.specification.TaskSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -21,6 +24,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
     private final TaskSpecification specBuilder;
+    private final LabelRepository labelRepository;
 
     public List<TaskDTO> index(TaskParamsDTO params) {
         var spec = specBuilder.build(params);
@@ -36,6 +40,13 @@ public class TaskService {
 
     public TaskDTO create(TaskCreateDTO taskData) {
         var task = taskMapper.map(taskData);
+
+        // Получение существующих меток по ID
+        if (taskData.getLabelIds() != null) {
+            Set<Label> existingLabels = labelRepository.findByIdIn(taskData.getLabelIds());
+            task.setLabels(existingLabels);
+        }
+
         taskRepository.findAll().stream()
                 .filter(existingTask -> existingTask.equals(task))
                 .findAny()

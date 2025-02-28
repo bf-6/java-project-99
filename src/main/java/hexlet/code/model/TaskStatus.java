@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "task_statuses")
+@Table(name = "statuses")
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

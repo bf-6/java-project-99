@@ -57,7 +57,7 @@ public class UsersController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("@userUtils.getCurrentUser().getId() == #id")
+    @PreAuthorize("@userUtils.isAuthor(#id)")
     public void delete(@PathVariable Long id) {
         userService.destroy(id);
     }

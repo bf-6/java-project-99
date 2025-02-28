@@ -38,6 +38,11 @@ public class DataInitializer implements ApplicationRunner {
         userData.setPasswordDigest("qwerty");
         userService.createUser(userData);
 
+        getDefaultStatuses();
+        getDefaultLabels();
+    }
+
+    void getDefaultStatuses() {
         Map<String, String> defaultStatuses = new HashMap<>(Map.of(
                 "Draft", "draft",
                 "To review", "to_review",
@@ -56,7 +61,9 @@ public class DataInitializer implements ApplicationRunner {
                     return status;
                 })
                 .forEach(statusRepository::save); // Сохраняем только новые записи
+    }
 
+    void getDefaultLabels() {
         List.of("feature", "bug").stream()
                 .filter(name -> labelRepository.findByName(name).isEmpty())
                 .map(name -> {

@@ -10,7 +10,7 @@ Task Manager – система управления задачами, подо�
 [![Test Coverage](https://api.codeclimate.com/v1/badges/51730a123680770c07b0/test_coverage)](https://codeclimate.com/github/bf-6/java-project-99/test_coverage)
 ## Деплой на Render
 
-https://java-task-manager-jg9n.onrender.com
+[Ссылка](https://java-task-manager-jg9n.onrender.com) на приложение на сайте рендер
 
 ## Инструкции
 
@@ -20,7 +20,8 @@ https://java-task-manager-jg9n.onrender.com
 make install
 make build
 make dev
-# после выполнения команд перейдите по ссылке localhost:8080
-# имя пользователя hexlet@exmaple.com
-# пароль qwerty
 ```
+
+После выполнения команд перейдите по ссылке localhost:8080
+Имя пользователя: hexlet@example.com
+Пароль: qwerty

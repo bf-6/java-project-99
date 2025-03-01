@@ -7,11 +7,11 @@ import hexlet.code.mapper.LabelMapper;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.util.ModelGenerator;
-import net.datafaker.Faker;
 import org.assertj.core.api.Assertions;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,9 +47,6 @@ public class LabelControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private Faker faker;
-
-    @Autowired
     private LabelRepository labelRepository;
 
     @Autowired
@@ -73,7 +70,6 @@ public class LabelControllerTest {
                 .build();
 
         testLabel = Instancio.of(modelGenerator.getLabelModel()).create();
-        labelRepository.save(testLabel);
     }
 
     @AfterEach
@@ -81,14 +77,15 @@ public class LabelControllerTest {
         labelRepository.deleteAll();
     }
 
+    @Order(2)
     @Test
     void testIndex() throws Exception {
-        var response = mockMvc.perform(get("/api/labels").with(jwt()))
+        var result = mockMvc.perform(get("/api/labels").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
 
-        var body = response.getContentAsString();
+        var body = result.getContentAsString();
 
         assertThatJson(body).isArray();
 
@@ -101,25 +98,32 @@ public class LabelControllerTest {
         Assertions.assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
+    @Order(1)
     @Test
-    void testCreate() throws Exception {
+    public void testCreate() throws Exception {
         var data = Instancio.of(modelGenerator.getLabelModel())
                 .create();
 
         var request = post("/api/labels").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(data));
-        mockMvc.perform(request)
-                .andExpect(status().isCreated());
+        var result = mockMvc.perform(request)
+                .andExpect(status().isCreated())
+                .andReturn();
 
-        var label = labelRepository.findByName(data.getName()).orElse(null);
+        var body = result.getResponse().getContentAsString();
 
-        assertNotNull(label);
-        assertThat(label.getName()).isEqualTo(data.getName());
+        assertThatJson(body).and(
+                v -> v.node("id").isPresent(),
+                v -> v.node("name").isEqualTo(data.getName()),
+                v -> v.node("createdAt").isPresent());
     }
 
+    @Order(4)
     @Test
     void testUpdate() throws Exception {
+
+        labelRepository.save(testLabel);
         var name = "update";
 
         var data = new HashMap<>();
@@ -137,30 +141,35 @@ public class LabelControllerTest {
         assertThat(label.getName()).isEqualTo(name);
     }
 
+    @Order(3)
     @Test
     void testShow() throws Exception {
-        var request = get("/api/labels/" + testLabel.getId()).with(jwt());
-        var result = mockMvc.perform(request)
+        labelRepository.save(testLabel);
+//        labelRepository.save(testLabel);
+        var result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
         assertThatJson(body).and(
+                v -> v.node("id").isPresent(),
                 v -> v.node("name").isEqualTo(testLabel.getName())
         );
     }
 
+    @Order(5)
     @Test
     void testDelete() throws Exception {
-        var data = Instancio.of(modelGenerator.getLabelModel())
-                .create();
+//        var data = Instancio.of(modelGenerator.getLabelModel())
+//                .create();
+//
+//        labelRepository.save(data);
 
-        labelRepository.save(data);
-
-        var request = delete("/api/labels/" + data.getId()).with(jwt());
+        var request = delete("/api/labels/" + testLabel.getId()).with(jwt());
         mockMvc.perform(request)
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andReturn();
 
-        data = labelRepository.findById(data.getId()).orElse(null);
+        var data = labelRepository.findById(testLabel.getId()).orElse(null);
         assertThat(data).isNull();
     }
 }

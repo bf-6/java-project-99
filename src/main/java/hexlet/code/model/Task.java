@@ -17,6 +17,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -53,6 +54,6 @@ public class Task implements BaseEntity {
     private LocalDate createdAt;
 
     @ManyToMany
-    private Set<Label> labels;
+    private Set<Label> labels = new HashSet<>();
 
 }

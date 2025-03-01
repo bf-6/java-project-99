@@ -80,6 +80,7 @@ public class LabelControllerTest {
     @Order(2)
     @Test
     void testIndex() throws Exception {
+        labelRepository.save(testLabel);
         var result = mockMvc.perform(get("/api/labels").with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -98,7 +99,6 @@ public class LabelControllerTest {
         Assertions.assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @Order(1)
     @Test
     public void testCreate() throws Exception {
         var data = Instancio.of(modelGenerator.getLabelModel())
@@ -119,7 +119,6 @@ public class LabelControllerTest {
                 v -> v.node("createdAt").isPresent());
     }
 
-    @Order(4)
     @Test
     void testUpdate() throws Exception {
 
@@ -141,11 +140,9 @@ public class LabelControllerTest {
         assertThat(label.getName()).isEqualTo(name);
     }
 
-    @Order(3)
     @Test
     void testShow() throws Exception {
         labelRepository.save(testLabel);
-//        labelRepository.save(testLabel);
         var result = mockMvc.perform(get("/api/labels/{id}", testLabel.getId()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -156,13 +153,9 @@ public class LabelControllerTest {
         );
     }
 
-    @Order(5)
     @Test
     void testDelete() throws Exception {
-//        var data = Instancio.of(modelGenerator.getLabelModel())
-//                .create();
-//
-//        labelRepository.save(data);
+        labelRepository.save(testLabel);
 
         var request = delete("/api/labels/" + testLabel.getId()).with(jwt());
         mockMvc.perform(request)

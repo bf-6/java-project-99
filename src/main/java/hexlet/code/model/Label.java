@@ -38,9 +38,6 @@ public class Label implements BaseEntity {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "labels", cascade = CascadeType.ALL)
-    private Set<Task> tasks = new HashSet<>();
-
     @CreatedDate
     private LocalDate createdAt;
 

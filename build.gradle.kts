@@ -67,6 +67,10 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+//tasks.withType<Checkstyle> {
+//	enabled = false
+//}
+
 tasks.test {
 	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run

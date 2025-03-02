@@ -6,6 +6,7 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
+import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
@@ -37,7 +38,7 @@ public abstract class TaskMapper {
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "statusSlug")
-    @Mapping(source = "assigneeId", target = "assignee.id")
+    @Mapping(source = "assigneeId", target = "assignee", qualifiedByName = "mapAssignee")
     @Mapping(source = "labelIds", target = "labels", qualifiedByName = "getLabels")
     public abstract Task map(TaskCreateDTO model);
 
@@ -51,7 +52,7 @@ public abstract class TaskMapper {
     @Mapping(target = "name", source = "title")
     @Mapping(target = "description", source = "content")
     @Mapping(target = "taskStatus.slug", source = "status")
-    @Mapping(target = "assignee.id", source = "assigneeId")
+    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "mapAssignee")
     @Mapping(target = "labels", source = "labelIds", qualifiedByName = "getLabels")
     public abstract void update(TaskUpdateDTO update, @MappingTarget Task model);
 
@@ -71,5 +72,15 @@ public abstract class TaskMapper {
         return labels.stream()
                 .map(Label::getId)
                 .collect(Collectors.toSet());
+    }
+
+    @Named("mapAssignee")
+    User mapAssignee(Long assigneeId) {
+        if (assigneeId == null) {
+            return null;
+        }
+        User user = new User();
+        user.setId(assigneeId);
+        return user;
     }
 }

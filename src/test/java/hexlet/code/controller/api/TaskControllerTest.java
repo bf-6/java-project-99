@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Set;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -228,30 +227,24 @@ public class TaskControllerTest {
     }
 
     @Test
-    public void testCreate() throws Exception {
-        var name = "Task Name";
-        var content = "Task Content";
-        var data = new HashMap<String, Object>();
-        data.put("title", name);
-        data.put("content", content);
-        data.put("status", testTask.getTaskStatus());
-        data.put("labelIds", testTask.getLabels());
+    void testCreate() throws Exception {
+
+        var dto = taskMapper.map(testTask);
 
         var request = post("/api/tasks").with(jwt())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(data));
-        var result = mockMvc.perform(request)
+                .content(objectMapper.writeValueAsString(dto));
+
+        mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andReturn();
-        var body = result.getResponse().getContentAsString();
+        var task = taskRepository.findByName(testTask.getName()).get();
 
-        assertThatJson(body).and(
-                v -> v.node("id").isPresent(),
-                v -> v.node("content").isPresent(),
-                v -> v.node("title").isPresent(),
-                v -> v.node("status").isEqualTo(data.get("status")),
-                v -> v.node("labelIds").isEqualTo(testTask.getLabels())
-        );
+        assertThat(task).isNotNull();
+        assertThat(task.getName()).isEqualTo(testTask.getName());
+        assertThat(task.getDescription()).isEqualTo(testTask.getDescription());
+        assertThat(task.getAssignee().getId()).isEqualTo(testTask.getAssignee().getId());
+        assertThat(task.getTaskStatus().getSlug()).isEqualTo(testTask.getTaskStatus().getSlug());
     }
 
     @Test

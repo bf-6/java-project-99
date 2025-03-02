@@ -14,7 +14,7 @@ public class TaskSpecification {
         return withTitleCont(params.getTitleCont())
                 .and(withAssigneeId(params.getAssigneeId()))
                 .and(withStatus(params.getStatus()))
-                .and(withLabelId(params.getLabelId()));
+                .and(withLabelId(params.getTaskLabelIds()));
     }
 
     private Specification<Task> withTitleCont(String titleCont) {

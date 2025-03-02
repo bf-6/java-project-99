@@ -186,13 +186,13 @@ public class TaskControllerTest {
         var param = new TaskParamsDTO();
         param.setAssigneeId(anotherUser.getId());
         param.setStatus(testStatus.getSlug());
-        param.setLabelId(testLabel.getId());
+        param.setTaskLabelIds(testLabel.getId());
         param.setTitleCont(testTask.getName().substring(0).toUpperCase());
         taskRepository.save(testTask);
         var result = mockMvc.perform(get("/api/tasks?titleCont=" + param.getTitleCont()
                         + "&assigneeId=" + param.getAssigneeId()
                         + "&status=" + param.getStatus()
-                        + "&labelId=" + param.getLabelId()).with(jwt()))
+                        + "&taskLabelIds=" + param.getTaskLabelIds()).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn();
         var body = result.getResponse().getContentAsString();
@@ -201,7 +201,7 @@ public class TaskControllerTest {
                         .and(v -> v.node("title").isEqualTo(testTask.getName()))
                         .and(v -> v.node("status").isEqualTo(testTask.getTaskStatus().getSlug()))
                         .and(v -> v.node("assigneeId").isEqualTo(testTask.getAssignee().getId()))
-                        .and(v -> v.node("labelId").isEqualTo(testTask.getLabels().stream()
+                        .and(v -> v.node("taskLabelIds").isEqualTo(testTask.getLabels().stream()
                                 .map(Label::getId)
                                 .filter(id -> labelRepository.findById(testLabel.getId())
                                         .equals(id))))

@@ -42,8 +42,8 @@ public class TaskService {
         var task = taskMapper.map(taskData);
 
         // Получение существующих меток по ID
-        if (taskData.getLabelIds() != null) {
-            Set<Label> existingLabels = labelRepository.findByIdIn(taskData.getLabelIds());
+        if (taskData.getTaskLabelIds() != null) {
+            Set<Label> existingLabels = labelRepository.findByIdIn(taskData.getTaskLabelIds());
             task.setLabels(existingLabels);
         }
 

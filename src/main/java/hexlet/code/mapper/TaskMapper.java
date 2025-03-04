@@ -6,7 +6,6 @@ import hexlet.code.dto.task.TaskUpdateDTO;
 import hexlet.code.model.Label;
 import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
-import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import org.mapstruct.Mapper;
@@ -18,6 +17,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,22 +38,22 @@ public abstract class TaskMapper {
     @Mapping(source = "title", target = "name")
     @Mapping(source = "content", target = "description")
     @Mapping(source = "status", target = "taskStatus", qualifiedByName = "statusSlug")
-    @Mapping(source = "assigneeId", target = "assignee", qualifiedByName = "mapAssignee")
+    @Mapping(source = "assigneeId", target = "assignee")
     @Mapping(source = "taskLabelIds", target = "labels", qualifiedByName = "getLabels")
     public abstract Task map(TaskCreateDTO model);
 
-    @Mapping(target = "title", source = "name")
-    @Mapping(target = "content", source = "description")
-    @Mapping(target = "status", source = "taskStatus.slug")
-    @Mapping(target = "assigneeId", source = "assignee.id")
+    @Mapping(source = "name", target = "title")
+    @Mapping(source = "description", target = "content")
+    @Mapping(source = "taskStatus.slug", target = "status")
+    @Mapping(source = "assignee.id", target = "assigneeId")
     @Mapping(target = "taskLabelIds", source = "labels", qualifiedByName = "getLabelIds")
     public abstract TaskDTO map(Task model);
 
-    @Mapping(target = "name", source = "title")
-    @Mapping(target = "description", source = "content")
-    @Mapping(target = "taskStatus.slug", source = "status")
-    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "mapAssignee")
-    @Mapping(target = "labels", source = "taskLabelIds", qualifiedByName = "getLabels")
+    @Mapping(source = "title", target = "name")
+    @Mapping(source = "content", target = "description")
+    @Mapping(source = "assigneeId", target = "assignee")
+    @Mapping(source = "status", target = "taskStatus", qualifiedByName = "statusSlug")
+    @Mapping(source = "taskLabelIds", target = "labels", qualifiedByName = "getLabels")
     public abstract void update(TaskUpdateDTO update, @MappingTarget Task model);
 
     @Named("statusSlug")
@@ -69,18 +69,10 @@ public abstract class TaskMapper {
 
     @Named("getLabelIds")
     Set<Long> getLabelIds(Set<Label> labels) {
-        return labels.stream()
+        return labels == null ? new HashSet<>()
+                : labels.stream()
                 .map(Label::getId)
                 .collect(Collectors.toSet());
     }
 
-    @Named("mapAssignee")
-    User mapAssignee(Long assigneeId) {
-        if (assigneeId == null) {
-            return null;
-        }
-        User user = new User();
-        user.setId(assigneeId);
-        return user;
-    }
 }

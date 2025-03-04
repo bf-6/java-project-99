@@ -8,6 +8,5 @@ RUN gradle installDist
 FROM openjdk:21-jdk-slim
 WORKDIR .
 COPY --from=build /app/build/install/app /app
-ENV SPRING_PROFILES_ACTIVE=development
 EXPOSE 8080
 CMD ["./bin/app"]

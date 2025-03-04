@@ -1,12 +1,9 @@
-FROM gradle:8.9-jdk21 AS build
+FROM gradle:8.9-jdk21
+
 WORKDIR .
-COPY src ./src
-COPY build.gradle.kts .
-COPY settings.gradle.kts .
+
+COPY . .
+
 RUN gradle installDist
 
-FROM openjdk:21-jdk-slim
-WORKDIR .
-COPY --from=build /app/build/install/app /app
-EXPOSE 8080
-CMD ["./bin/app"]
+CMD ./build/install/app/bin/app
